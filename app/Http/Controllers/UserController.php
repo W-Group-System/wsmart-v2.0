@@ -54,14 +54,29 @@ class UserController extends Controller
                     ->get();
         
         $data = $users->map(function($item) {
+            $buttons = "";
+            if ($item->status == null)
+            {
+                $buttons = '<button type="button" class="btn btn-sm btn-danger" id="deactivateBtn" title="Deactivate User">
+                                <i class="fa fa-ban"></i>
+                            </button>';
+            }
+            else
+            {
+                $buttons = '<button type="button" class="btn btn-sm btn-success" id="activateBtn" title="Activate User">
+                                <i class="fa fa-check"></i>
+                            </button>';
+            }
+
             return [
                 'action' => '
                     <button type="button" class="btn btn-sm btn-warning" id="editUserBtn" data-department="'.$item->department_id.'" data-subsidiary="'.$item->subsidiary_id.'" data-role="'.$item->role_id.'">
                         <i class="fa fa-pencil-square-o"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-danger">
-                        <i class="fa fa-ban"></i>
+                    <button type="button" class="btn btn-sm btn-info" title="Change Password">
+                        <i class="fa fa-key"></i>
                     </button>
+                    '.$buttons.'
                 ',
                 'id' => $item->id,
                 'name' => $item->name,
@@ -203,5 +218,28 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function deactivate(Request $request)
+    {
+        // dd($request->all());
+        $user = User::findOrFail($request->user_id);
+        $user->status = "Deactivate";
+        $user->save();
+
+        return response()->json([
+            'message' => 'Successfully Deactivated'
+        ]);
+    }
+    public function activate(Request $request)
+    {
+        // dd($request->all());
+        $user = User::findOrFail($request->user_id);
+        $user->status = null;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Successfully Activated'
+        ]);
     }
 }

@@ -14,6 +14,42 @@
 <!-- Main content -->
 <section class="content">
     <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="fa fa-user"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total User</span>
+                    <span class="info-box-number">0</span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-green"><i class="fa fa-user-plus"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total Active</span>
+                    <span class="info-box-number">0</span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-red"><i class="fa fa-user-times"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total Inactive</span>
+                    <span class="info-box-number">0</span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
         <div class="col-lg-12">
             <div class="box">
                 <div class="box-header">
@@ -92,8 +128,54 @@
                     $("#editRole").val($(this).data('role')).trigger('change')
                     $("#editSubsidiary").val($(this).data('subsidiary')).trigger('change')
                     $("#editUserId").val(data.id)
+                }),
+                $(row).find("#deactivateBtn").on('click', function() {
+                    var id = data.id
+
+                    $.ajax({
+                        type:"POST",
+                        url: "{{ url('deactivate_user') }}",
+                        data: {
+                            user_id: id,
+                            _token:"{{ csrf_token() }}"
+                        },
+                        success: function(res) {
+                            
+                            $.toast({
+                                heading: 'Success',
+                                text: res.message,
+                                position: 'top-right',
+                                stack: false,
+                                icon: 'success'
+                            })
+
+                            userTable.ajax.reload()
+                        }
+                    })
+                }),
+                $(row).find("#activateBtn").on('click', function() {
+                    var id = data.id
+
+                    $.ajax({
+                        type:"POST",
+                        url: "{{ url('activate_user') }}",
+                        data: {
+                            user_id: id,
+                            _token:"{{ csrf_token() }}"
+                        },
+                        success: function(res) {
+                            $.toast({
+                                heading: 'Success',
+                                text: res.message,
+                                position: 'top-right',
+                                stack: false,
+                                icon: 'success'
+                            })
+
+                            userTable.ajax.reload()
+                        }
+                    })
                 })
-                
             }
         })
         
@@ -153,7 +235,7 @@
                             text: res.error,
                             position: 'top-right',
                             stack: false,
-                            icon: 'success'
+                            icon: 'error'
                         })
                     }
                     else {

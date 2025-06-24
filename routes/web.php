@@ -23,3 +23,5 @@ Route::get('user_management', 'UserController@index');
 Route::post('get_users', 'UserController@getUsers');
 Route::post('store_users','UserController@store');
 Route::post('update_users','UserController@update');
+Route::post('deactivate_user','UserController@deactivate');
+Route::post('activate_user','UserController@activate');
