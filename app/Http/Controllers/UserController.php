@@ -248,7 +248,7 @@ class UserController extends Controller
     public function user_module_access(Request $request,$id)
     {
         $user = User::findOrFail($id);
-        $modules = Module::get();
+        $modules = Module::with('submodule')->get();
 
         return view('user.user_access_module',compact('modules','user'));
     }

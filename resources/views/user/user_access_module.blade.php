@@ -59,7 +59,7 @@
                                     <tr>
                                         <td colspan="5"><b>{{ $module->module_name }}</b></td>
                                     </tr>
-                                    @foreach ($module->submodule as $submodule)
+                                    @foreach ($module->submodule->where('status',null) as $submodule)
                                         <tr>
                                             <td><p style="margin-left: 15px;">{{ $submodule->submodule_name }}</p></td>
                                             <td>
