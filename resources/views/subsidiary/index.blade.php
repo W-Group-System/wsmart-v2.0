@@ -140,7 +140,7 @@
                                         
                                         $.toast({
                                             heading: 'Success',
-                                            text: res.message,
+                                            text: res.msg,
                                             position: 'top-right',
                                             stack: false,
                                             icon: 'success'
@@ -175,7 +175,7 @@
                                     success: function(res) {
                                         $.toast({
                                             heading: 'Success',
-                                            text: res.message,
+                                            text: res.msg,
                                             position: 'top-right',
                                             stack: false,
                                             icon: 'success'
@@ -256,7 +256,7 @@
                     else {
                         $.toast({
                             heading: 'Success',
-                            text: res.message,
+                            text: res.msg,
                             position: 'top-right',
                             stack: false,
                             icon: 'success'

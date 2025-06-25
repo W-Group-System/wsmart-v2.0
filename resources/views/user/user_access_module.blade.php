@@ -1,7 +1,7 @@
 @extends('layouts.header')
 
 @section('css')
-  <link rel="stylesheet" href="{{ asset('plugins/iCheck/all.css') }}">
+<link rel="stylesheet" href="{{ asset('plugins/iCheck/all.css') }}">
 @endsection
 
 @section('content')
@@ -26,7 +26,7 @@
                 </div>
                 <div class="box-body">
                     <form method="post" action="{{ url('store_user_module_access') }}" id="userAccessModuleForm">
-                        @csrf 
+                        @csrf
                         <input type="hidden" name="user_id" value="{{ $user->id }}">
                         <table class="table table-bordered table-hover">
                             <thead>
@@ -56,34 +56,40 @@
                             </thead>
                             <tbody>
                                 @foreach ($modules as $module)
-                                    <tr>
-                                        <td colspan="5"><b>{{ $module->module_name }}</b></td>
-                                    </tr>
-                                    @foreach ($module->submodule->where('status',null) as $submodule)
-                                        <tr>
-                                            <td><p style="margin-left: 15px;">{{ $submodule->submodule_name }}</p></td>
-                                            <td>
-                                                <label>
-                                                    <input type="checkbox" class="minimal createCheck" name="module_access[{{ $submodule->id }}][create]" >
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <input type="checkbox" class="minimal readCheck" name="module_access[{{ $submodule->id }}][read]">
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <input type="checkbox" class="minimal updateCheck" name="module_access[{{ $submodule->id }}][update]">
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label>
-                                                    <input type="checkbox" class="minimal deleteCheck" name="module_access[{{ $submodule->id }}][delete]">
-                                                </label>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                <tr>
+                                    <td colspan="5"><b>{{ $module->module_name }}</b></td>
+                                </tr>
+                                @foreach ($module->submodule->where('status',null) as $submodule)
+                                <tr>
+                                    <td>
+                                        <p style="margin-left: 15px;">{{ $submodule->submodule_name }}</p>
+                                    </td>
+                                    <td>
+                                        <label>
+                                            <input type="checkbox" class="minimal createCheck"
+                                                name="module_access[{{ $submodule->id }}][create]">
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label>
+                                            <input type="checkbox" class="minimal readCheck"
+                                                name="module_access[{{ $submodule->id }}][read]">
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label>
+                                            <input type="checkbox" class="minimal updateCheck"
+                                                name="module_access[{{ $submodule->id }}][update]">
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label>
+                                            <input type="checkbox" class="minimal deleteCheck"
+                                                name="module_access[{{ $submodule->id }}][delete]">
+                                        </label>
+                                    </td>
+                                </tr>
+                                @endforeach
                                 @endforeach
                             </tbody>
                         </table>
@@ -93,11 +99,36 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="box box-primary">
+            <div class="box box-primary" style="height: 100%; overflow-y:auto;">
                 <div class="box-header">
                     <p class="box-title">Audit Logs</p>
                 </div>
-                <div class="box-body"></div>
+                <div class="box-body">
+                    <div class="panel box box-danger">
+                        @foreach ($user->audit as $key=>$audit)
+                            <div class="box-header with-border">
+                                <h4 class="box-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ $key+1 }}"
+                                        aria-expanded="true" class="">
+                                        @php
+                                            $type = $audit->auditable_type;
+                                            $auditable_type = explode("\\", $type);
+                                        @endphp
+                                        {{ $user->name }} - {{ $auditable_type[1] }}
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse{{ $key+1 }}" class="panel-collapse collapse in" aria-expanded="true" style="">
+                                <div class="box-body">
+                                    <small><b>Event :</b></small> {{ $audit->event }} <br>
+                                    <small><b>Created At :</b></small> {{ date('M d Y', strtotime($audit->created_at)) }} <br>
+                                    <small><b>Old :</b></small> {{ $audit->old_values }} <br>
+                                    <small><b>New :</b></small> {{ $audit->new_values }}
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
     </div>
