@@ -34,6 +34,8 @@
     <link rel="stylesheet" href="{{ asset('css/jquery.toast.min.css') }}">
     <!-- Select2 -->
     <link rel="stylesheet" href="{{ asset('bower_components/select2/dist/css/select2.min.css') }}">
+    {{-- Jquery Confirm --}}
+    <link rel="stylesheet" href="{{ asset('css/jquery-confirm.css') }}">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -409,10 +411,10 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li class=""><a href="{{ url('user_management') }}"><i class="fa fa-circle-o"></i> User Management</a></li>
-                            <li class=""><a href="{{ url('subsidiary') }}"><i class="fa fa-circle-o"></i> Subsidiary</a></li>
-                            <li class=""><a href="{{ url('department') }}"><i class="fa fa-circle-o"></i> Department</a></li>
-                            <li class=""><a href="{{ url('uoms') }}"><i class="fa fa-circle-o"></i> Unit of Measurement</a></li>
+                            <li class="@if(Request::is('user_management')) active @endif"><a href="{{ url('user_management') }}"><i class="fa fa-circle-o"></i> User Management</a></li>
+                            <li class="@if(Request::is('subsidiary')) active @endif"><a href="{{ url('subsidiary') }}"><i class="fa fa-circle-o"></i> Subsidiary</a></li>
+                            <li class="@if(Request::is('department')) active @endif"><a href="{{ url('department') }}"><i class="fa fa-circle-o"></i> Department</a></li>
+                            <li class="@if(Request::is('uoms')) active @endif"><a href="{{ url('uoms') }}"><i class="fa fa-circle-o"></i> Unit of Measurement</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -679,6 +681,8 @@
     <script src="{{ asset('js/jquery.toast.min.js') }}"></script>
     <!-- Select2 -->
     <script src="{{ asset('bower_components/select2/dist/js/select2.full.min.js') }}"></script>
+    {{-- Jquery Confirm --}}
+    <script src="{{ asset('js/jquery-confirm.js') }}"></script>
     @yield('js')
 </body>
 

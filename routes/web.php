@@ -32,3 +32,11 @@ Route::post('store_user_module_access', 'UserController@storeUserModuleAccess');
 // Department
 Route::get('department', 'DepartmentController@index');
 Route::post('get_department','DepartmentController@getDepartment');
+
+// Subsidiary
+Route::get('subsidiary','SubsidiaryController@index');
+Route::post('get-subsidiary','SubsidiaryController@getSubsidiary');
+Route::post('store-subsidiary','SubsidiaryController@store');
+Route::post('update-subsidiary','SubsidiaryController@update');
+Route::post('deactivate-subsidiary','SubsidiaryController@deactivate');
+Route::post('activate-subsidiary','SubsidiaryController@activate');
