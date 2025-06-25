@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Department;
+use App\Feature;
+use App\Module;
 use App\Role;
 use App\Subsidiary;
 use App\User;
+use App\UserAccessModule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -73,9 +76,9 @@ class UserController extends Controller
                     <button type="button" class="btn btn-sm btn-warning" id="editUserBtn" data-department="'.$item->department_id.'" data-subsidiary="'.$item->subsidiary_id.'" data-role="'.$item->role_id.'">
                         <i class="fa fa-pencil-square-o"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-info" title="Change Password">
+                    <a href="'.url('user_module_access/'.$item->id).'" type="button" class="btn btn-sm btn-info" title="Change Password">
                         <i class="fa fa-key"></i>
-                    </button>
+                    </a>
                     '.$buttons.'
                 ',
                 'id' => $item->id,
@@ -240,6 +243,84 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Successfully Activated'
+        ]);
+    }
+    public function user_module_access(Request $request,$id)
+    {
+        $user = User::findOrFail($id);
+        $modules = Module::get();
+
+        return view('user.user_access_module',compact('modules','user'));
+    }
+    public function storeUserModuleAccess(Request $request)
+    {
+        // dd($request->all());
+        $user_access_module = UserAccessModule::where('user_id', $request->user_id)->first();
+        // dd($user_access_module);
+        if ($user_access_module)
+        {
+            $user_access_module = UserAccessModule::where('user_id', $request->user_id)->delete();
+
+            foreach($request->module_access as $submoduleKey=>$module)
+            {
+                $user_access_module = new UserAccessModule;
+                $user_access_module->user_id = $request->user_id;
+                $user_access_module->submodule_id = $submoduleKey;
+                foreach($module as $actionKey=>$value)
+                {
+                    if ($actionKey == "read")
+                    {
+                        $user_access_module->read = $value;
+                    }
+                    if ($actionKey == "create")
+                    {
+                        $user_access_module->create = $value;
+                    }
+                    if ($actionKey == "update")
+                    {
+                        $user_access_module->update = $value;
+                    }
+                    if ($actionKey == "delete")
+                    {
+                        $user_access_module->delete = $value;
+                    }
+                    $user_access_module->save();
+                }
+            }
+        }
+        else
+        {
+            foreach($request->module_access as $submoduleKey=>$module)
+            {
+                $user_access_module = new UserAccessModule;
+                $user_access_module->user_id = $request->user_id;
+                $user_access_module->submodule_id = $submoduleKey;
+                foreach($module as $actionKey=>$value)
+                {
+                    if ($actionKey == "read")
+                    {
+                        $user_access_module->read = $value;
+                    }
+                    if ($actionKey == "create")
+                    {
+                        $user_access_module->create = $value;
+                    }
+                    if ($actionKey == "update")
+                    {
+                        $user_access_module->update = $value;
+                    }
+                    if ($actionKey == "delete")
+                    {
+                        $user_access_module->delete = $value;
+                    }
+                    $user_access_module->save();
+                }
+            }
+        }
+
+        return response()->json([
+            'msg' => 'Successfully Saved',
+            'status' => 201
         ]);
     }
 }
