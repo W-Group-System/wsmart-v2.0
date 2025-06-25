@@ -40,3 +40,11 @@ Route::post('store-subsidiary','SubsidiaryController@store');
 Route::post('update-subsidiary','SubsidiaryController@update');
 Route::post('deactivate-subsidiary','SubsidiaryController@deactivate');
 Route::post('activate-subsidiary','SubsidiaryController@activate');
+
+// Uom
+Route::get('uoms','UomController@index');
+Route::post('get-uom','UomController@getUom');
+Route::post('store-uom','UomController@store'); 
+Route::post('update-uom','UomController@update');
+Route::post('deactivate-uom','UomController@deactivate');
+Route::post('activate-uom','UomController@activate');
