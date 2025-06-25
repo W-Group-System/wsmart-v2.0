@@ -19,6 +19,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+// User
 Route::get('user_management', 'UserController@index');
 Route::get('user_module_access/{id}','UserController@user_module_access');
 Route::post('get_users', 'UserController@getUsers');
@@ -27,3 +28,7 @@ Route::post('update_users','UserController@update');
 Route::post('deactivate_user','UserController@deactivate');
 Route::post('activate_user','UserController@activate');
 Route::post('store_user_module_access', 'UserController@storeUserModuleAccess');
+
+// Department
+Route::get('department', 'DepartmentController@index');
+Route::post('get_department','DepartmentController@getDepartment');

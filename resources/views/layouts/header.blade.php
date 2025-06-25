@@ -56,9 +56,9 @@
             <!-- Logo -->
             <a href="index2.html" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>A</b>LT</span>
+                <span class="logo-mini"><b>W</b>S</span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b>Admin</b>LTE</span>
+                <span class="logo-lg"><b>W</b> Smart</span>
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top">
@@ -410,7 +410,9 @@
                         </a>
                         <ul class="treeview-menu">
                             <li class=""><a href="{{ url('user_management') }}"><i class="fa fa-circle-o"></i> User Management</a></li>
-                            <li class=""><a href="{{ url('') }}"><i class="fa fa-circle-o"></i> Department</a></li>
+                            <li class=""><a href="{{ url('subsidiary') }}"><i class="fa fa-circle-o"></i> Subsidiary</a></li>
+                            <li class=""><a href="{{ url('department') }}"><i class="fa fa-circle-o"></i> Department</a></li>
+                            <li class=""><a href="{{ url('uoms') }}"><i class="fa fa-circle-o"></i> Unit of Measurement</a></li>
                         </ul>
                     </li>
                 </ul>
