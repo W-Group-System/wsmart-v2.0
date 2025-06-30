@@ -104,30 +104,34 @@
                     <p class="box-title">Audit Logs</p>
                 </div>
                 <div class="box-body">
-                    <div class="panel box box-danger">
-                        @foreach ($user->audit as $key=>$audit)
-                            <div class="box-header with-border">
-                                <h4 class="box-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ $key+1 }}"
-                                        aria-expanded="true" class="">
-                                        @php
-                                            $type = $audit->auditable_type;
-                                            $auditable_type = explode("\\", $type);
-                                        @endphp
-                                        {{ $user->name }} - {{ $auditable_type[1] }}
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapse{{ $key+1 }}" class="panel-collapse collapse in" aria-expanded="true" style="">
-                                <div class="box-body">
-                                    <small><b>Event :</b></small> {{ $audit->event }} <br>
-                                    <small><b>Created At :</b></small> {{ date('M d Y', strtotime($audit->created_at)) }} <br>
-                                    <small><b>Old :</b></small> {{ $audit->old_values }} <br>
-                                    <small><b>New :</b></small> {{ $audit->new_values }}
+                    @if(count($user->audit) > 0)
+                        <div class="panel box box-danger">
+                            @foreach ($user->audit as $key=>$audit)
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ $key+1 }}"
+                                            aria-expanded="true" class="">
+                                            @php
+                                                $type = $audit->auditable_type;
+                                                $auditable_type = explode("\\", $type);
+                                            @endphp
+                                            {{ $user->name }} - {{ $auditable_type[1] }}
+                                        </a>
+                                    </h4>
                                 </div>
-                            </div>
-                        @endforeach
-                    </div>
+                                <div id="collapse{{ $key+1 }}" class="panel-collapse collapse in" aria-expanded="true" style="">
+                                    <div class="box-body">
+                                        <small><b>Event :</b></small> {{ $audit->event }} <br>
+                                        <small><b>Created At :</b></small> {{ date('M d Y', strtotime($audit->created_at)) }} <br>
+                                        <small><b>Old :</b></small> {{ $audit->old_values }} <br>
+                                        <small><b>New :</b></small> {{ $audit->new_values }}
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <i> No User Logs</i>
+                    @endif
                 </div>
             </div>
         </div>

@@ -51,7 +51,7 @@
             <!-- /.info-box -->
         </div>
         <div class="col-lg-12">
-            <div class="box">
+            <div class="box box-primary">
                 <div class="box-header">
                     <button class="btn btn-primary" type="button" id="addUserBtn">
                         <i class="fa fa-plus"></i>

@@ -399,8 +399,9 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-                            <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
+                            <li class="@if(Request::is('purchase-request')) active @endif"><a href="{{ url('purchase-request') }}"><i class="fa fa-circle-o"></i>Purchase Request</a></li>
+                            <li class="@if(Request::is('purchase-order')) active @endif"><a href="{{ url('purchase-order') }}"><i class="fa fa-circle-o"></i> Purchase Order</a></li>
+                            <li class="@if(Request::is('for-approval')) active @endif"><a href="{{ url('for-approval') }}"><i class="fa fa-circle-o"></i> For Approval</a></li>
                         </ul>
                     </li>
                     <li class="treeview">
