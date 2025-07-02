@@ -33,7 +33,7 @@
                             <input type="text" name="position" id="editPosition" class="form-control" required>
                         </div>
                         <div class="col-md-12">
-                            Role
+                            Role <i>(Optional)</i>
                             <select data-placeholder="Select role" name="role" id="editRole" class="select2 form-control" style="width: 100%;" >
                                 <option value=""></option>
                                 @foreach ($roles as $role)

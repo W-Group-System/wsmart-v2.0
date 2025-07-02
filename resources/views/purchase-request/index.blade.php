@@ -50,7 +50,9 @@
             </div>
             <!-- /.info-box -->
         </div> --}}
-        <div class="col-lg-12">
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
             <div class="box box-primary">
                 <div class="box-header">
                     <a href="{{ url('create-purchase-request') }}" class="btn btn-primary" id="addBtn">
@@ -63,17 +65,112 @@
                         <table class="table table-bordered table-hover" id="purchaseRequestTable">
                             <thead>
                                 <tr>
-                                    <th>Action</th>
+                                    {{-- <th>Action</th>
                                     <th>Request Date </th>
                                     <th>PR Number </th>
                                     <th>Item Description </th>
                                     <th>Due Date </th>
                                     <th>Requestor Name </th>
                                     <th>Department </th>
-                                    <th>Subsidiary </th>
+                                    <th>Subsidiary </th> --}}
+                                    <th>Purchase Request</th>
                                 </tr>
                             </thead>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="box box-primary" >
+                <div class="box-header">
+                    Purchase Request Details
+                </div>
+                <div class="box-body">
+                    <div id="detailContainer" hidden>
+                        <h4>Primary Information</h4>
+                        <hr>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <b>Purchase Number :</b>
+                                        <p id="displayPurchaseNumber"></p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <b>Request Date :</b>
+                                        <p id="displayRequestDate"></p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <b>Request Due Date :</b>
+                                        <p id="displayDueDate"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="box box-primary" style="width: 40%;">
+                                <div class="box-head bg-primary">
+                                    <b>Total</b>
+                                </div>
+                                <div class="box-body">
+                                    <p id="totalAmount" style="margin:0;">TOTAL AMOUNT: 
+                                        <div class="text-right">
+                                            <span class="h3 text-right">0.00</span>
+                                        </div>
+                                    </p>
+                                </div>
+                            </div>
+                            </div>
+                            
+                        </div>
+                        <h4>Classification</h4>
+                        <hr>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <b>Subsidiary :</b>
+                                <p id="displaySubsidiary"></p>
+                            </div>
+                            <div class="col-lg-6">
+                                <b>Department :</b>
+                                <p id="displayDepartment"></p>
+                            </div>
+                            <div class="col-lg-6">
+                                <b>Class :</b>
+                                <p id="displayClass"></p>
+                            </div>
+                            <div class="col-lg-6">
+                                <b>Remarks :</b>
+                                <p id="displayRemarks"></p>
+                            </div>
+                        </div>
+                        <h4>Attachments</h4>
+                        <hr>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <b>Attachments :</b>
+                                <div id="fileContainer">
+
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <input type="hidden" id="purchaseRequestId">
+                            <div class="col-lg-12" style="margin-top: 20px;">
+                                <table class="table-bordered table" id="purchaseRequestItemTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Item Code</th>
+                                            <th>Item Description</th>
+                                            <th>Item Category</th>
+                                            <th>Item Sub Category</th>
+                                            <th>Item Quantity</th>
+                                            <th>Item Amount</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -110,174 +207,97 @@
                 processing: "⏳ Loading data, please wait..."
             },
             columns: [
-                { data: 'action' },
-                { data: 'request_date' },
-                { data: 'pr_number' },
-                {data: 'item_description'},
-                { data: 'due_date' },
-                { data: 'requestor' },
-                { data: 'department' },
-                { data: 'subsidiary' },
-                { data: 'status' }
-            ]
-            // rowCallback: function (row, data) {
-            //     $(row).find("#editBtn").on('click', function() {
-            //         $("#editSubsidiary").modal('show')
+                // { data: 'action' },
+                // { data: 'request_date' },
+                { 
+                    // data: 'pr_number',
+                    render: function(data, type, row) {
+                        var label = ""
+                        if(row.status == "Pending") {
+                            label = `<span class="label label-warning">${row.status}</span>`
+                        }
+                        else if(row.status == "For RFQ") {
+                            label = `<span class="label label-primary">${row.status}</span>`
+                        }
+                        else if(row.status == "Done") {
+                            label = `<span class="label label-success">${row.status}</span>`
+                        }
+
+                        return `
+                            <h3 style="margin:0;">${row.pr_number} - <small>${label}</small> </h3> <br>
+                            <h5 style="margin:0;">Requestor: ${row.requestor}</h5><br>
+                            <h6 style="margin:0;">Request Date: ${row.request_date}</h6><br>
+                        `
+                    }
+                },
+                // {data: 'item_description'},
+                // { data: 'due_date' },
+                // { data: 'requestor' },
+                // { data: 'department' },
+                // { data: 'subsidiary' },
+                // { data: 'status' }
+            ],
+            rowCallback: function (row, data) {
+                console.log(data.attachments);
+                
+                $(row).eq(0).find('td').on('click', function() {
+                    $("#detailContainer").removeAttr('hidden')
                     
-            //         $("#editName").val(data.name)
-            //         $("#editAddress").val(data.address)
-            //         $("#editShippingAddress").val(data.shipping_address)
-            //         $("#subsidiaryId").val(data.id)
-            //     }),
-            //     $(row).find("#deactivateBtn").on('click', function() {
-            //         var id = data.id
+                    $("#displayPurchaseNumber").text(data.pr_number)
+                    $("#displayRequestDate").text(data.request_date)
+                    $("#displayDueDate").text(data.due_date)
+                    $("#displaySubsidiary").text(data.subsidiary)
+                    $("#displayDepartment").text(data.department)
+                    $("#displayClass").text(data.class)
+                    $("#displayRemarks").text(data.remarks)
+                    $("#purchaseRequestId").val(data.id)
 
-            //         $.confirm({
-            //             title: 'Deactivate!',
-            //             content: 'Are you sure you want to deactivate this subsidiary?',
-            //             theme: 'material',
-            //             buttons: {
-            //                 confirm: function () {
-            //                     $.ajax({
-            //                         type:"POST",
-            //                         url: "{{ url('deactivate-subsidiary') }}",
-            //                         data: {
-            //                             subsidiary_id: id,
-            //                             _token:"{{ csrf_token() }}"
-            //                         },
-            //                         success: function(res) {
-                                        
-            //                             $.toast({
-            //                                 heading: 'Success',
-            //                                 text: res.msg,
-            //                                 position: 'top-right',
-            //                                 stack: false,
-            //                                 icon: 'success'
-            //                             })
+                    $("#fileContainer").children().remove()
+                    $.each(data.attachments, function(key, attachment) {
+                        let link = `
+                            <a href="{{ url('') }}${attachment.file}" target="_blank">
+                                <i class="fa fa-file-o"></i>
+                            </a><br>
+                        `;
+                        $("#fileContainer").append(link);
+                    })
 
-            //                             subsidiaryTable.ajax.reload()
-            //                         }
-            //                     })
-            //                 },
-            //                 cancel: function () {
-            //                     $.alert('Canceled!');
-            //                 },
-            //             }
-            //         });
-            //     }),
-            //     $(row).find("#activateBtn").on('click', function() {
-            //         var id = data.id
-                    
-            //         $.confirm({
-            //             title: 'Activate!',
-            //             content: 'Are you sure you want to activate this subsidiary?',
-            //             theme: 'material',
-            //             buttons: {
-            //                 confirm: function () {
-            //                     $.ajax({
-            //                         type:"POST",
-            //                         url: "{{ url('activate-subsidiary') }}",
-            //                         data: {
-            //                             subsidiary_id: id,
-            //                             _token:"{{ csrf_token() }}"
-            //                         },
-            //                         success: function(res) {
-            //                             $.toast({
-            //                                 heading: 'Success',
-            //                                 text: res.msg,
-            //                                 position: 'top-right',
-            //                                 stack: false,
-            //                                 icon: 'success'
-            //                             })
-
-            //                             subsidiaryTable.ajax.reload()
-            //                         }
-            //                     })
-            //                 },
-            //                 cancel: function () {
-            //                     $.alert('Canceled!');
-            //                 },
-            //             }
-            //         });
-            //     })
-            // }
+                    purchaseRequestItemTable.ajax.reload()
+                })
+            }
         })
         
-        // $("#addBtn").on('click', function() {
-        //     $('#newSubsidiary').modal('show')
-        // })
-
-        // $("#subsidiaryForm").on('submit', function(e) {
-        //     e.preventDefault()
-
-        //     var formData = $(this).serializeArray()
-            
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "{{ url('store-subsidiary') }}",
-        //         data: formData,
-        //         success: function(res) {
-        //             if (res.error == 500) {
-        //                 $.toast({
-        //                     heading: 'Error',
-        //                     text: res.error,
-        //                     position: 'top-right',
-        //                     stack: false,
-        //                     icon: 'success'
-        //                 })
-        //             }
-        //             else {
-        //                 $.toast({
-        //                     heading: 'Success',
-        //                     text: res.msg,
-        //                     position: 'top-right',
-        //                     stack: false,
-        //                     icon: 'success'
-        //                 })
-
-        //                 $("#newSubsidiary").modal('hide')
-
-        //                 subsidiaryTable.ajax.reload()
-        //             }
-        //         }
-        //     })
-        // })
-
-        // $("#updateSubsidiaryForm").on('submit', function(e) {
-        //     e.preventDefault()
-
-        //     var formData = $(this).serializeArray()
-            
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "{{ url('update-subsidiary') }}",
-        //         data: formData,
-        //         success: function(res) {
-        //             if (res.error == 500) {
-        //                 $.toast({
-        //                     heading: 'Error',
-        //                     text: res.error,
-        //                     position: 'top-right',
-        //                     stack: false,
-        //                     icon: 'error'
-        //                 })
-        //             }
-        //             else {
-        //                 $.toast({
-        //                     heading: 'Success',
-        //                     text: res.msg,
-        //                     position: 'top-right',
-        //                     stack: false,
-        //                     icon: 'success'
-        //                 })
-
-        //                 $("#editSubsidiary").modal('hide')
-
-        //                 subsidiaryTable.ajax.reload()
-        //             }
-        //         }
-        //     })
-        // })
+        var purchaseRequestItemTable = $('#purchaseRequestItemTable').DataTable({
+            paging: true,
+            lengthChange: true,
+            ordering: false,
+            info: true,
+            autoWidth: false,
+            processing: true,
+            serverSide: true,
+            stateSave:true,
+            ajax: {
+                type: "POST",
+                url: "{{ url('get-purchase-item') }}",
+                data: function(d){
+                    d.purchase_request_id = $("#purchaseRequestId").val();
+                },
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            },
+            language: {
+                processing: "⏳ Loading data, please wait..."
+            },
+            columns: [
+                {data: "item_code"},
+                {data: "item_description"},
+                {data: "category"},
+                {data: "subcategory"},
+                {data: "qty"},
+                {data: "amount"}
+            ]
+        })
     })
 </script>
 @endsection

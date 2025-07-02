@@ -30,8 +30,8 @@
                             <input type="text" name="position" id="position" class="form-control" required>
                         </div>
                         <div class="col-md-12">
-                            Role
-                            <select data-placeholder="Select role" name="role" id="role" class="select2 form-control" style="width: 100%;" required>
+                            Role <i>(Optional)</i>
+                            <select data-placeholder="Select role" name="role" id="role" class="select2 form-control" style="width: 100%;" >
                                 <option value=""></option>
                                 @foreach ($roles as $role)
                                     <option value="{{ $role->id }}">{{ $role->name }}</option>

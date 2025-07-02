@@ -6,6 +6,8 @@ use App\Classification;
 use App\Department;
 use App\Inventory;
 use App\PurchaseRequest;
+use App\PurchaseRequestFile;
+use App\PurchaseRequestItem;
 use Illuminate\Http\Request;
 
 class PurchaseRequestController extends Controller
@@ -22,7 +24,7 @@ class PurchaseRequestController extends Controller
     
     public function getPurchaseRequest(Request $request)
     {
-        $query = PurchaseRequest::with('user');
+        $query = PurchaseRequest::with('user','classification','department','subsidiary','purchaseRequestFile');
 
         if ($search = $request->input('search.value')) {
             $query->where(function ($q) use ($search) {
@@ -60,13 +62,61 @@ class PurchaseRequestController extends Controller
                 'department' => $item->department->name,
                 'item_description' => "",
                 'subsidiary' => $item->subsidiary->subsidiary_name,
-                'status' => $item->status
+                'status' => $item->status,
+                'class' => $item->classification->name,
+                'remarks' => nl2br(e($item->remarks)),
+                'attachments' => $item->purchaseRequestFile
             ];
         });
         
         return response()->json([
             'draw' => $request->draw,
             'recordsTotal' => $purchase_request->count(),
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data
+        ]);
+    }
+
+    public function getPurchaseRequestItem(Request $request)
+    {
+        $query = PurchaseRequestItem::with('purchaseRequest')->where('purchase_request_id', $request->purchase_request_id);
+
+        if ($search = $request->input('search.value')) {
+            // $query->where(function ($q) use ($search) {
+            //     $q->where('id', 'like', "%{$search}%")
+            //         ->orWhereHas('user', function ($q) use ($search) {
+            //             $q->where('name', 'like', "%{$search}%");
+            //         })
+            //         ->orWhereHas('department', function ($q) use ($search) {
+            //             $q->where('name', 'like', "%{$search}%");
+            //         })
+            //         ->orWhereHas('subsidiary', function ($q) use ($search) {
+            //             $q->where('subsidiary_name', 'like', "%{$search}%");
+            //         });
+            // });
+        }
+        
+        $recordsFiltered = $query->count();
+
+        $purchase_request_item = $query->offset($request->start)
+                    ->limit($request->length)
+                    ->get();
+        
+        $data = $purchase_request_item->map(function($item) {
+            return [
+                'id' => $item->id,
+                'item_code' => $item->inventory->item_code,
+                'item_description' => $item->inventory->item_code,
+                'category' => "",
+                'subcategory' => "",
+                'qty' => $item->inventory->qty,
+                'amount' => $item->inventory->cost
+            ];
+        });
+        
+        return response()->json([
+            'draw' => $request->draw,
+            'recordsTotal' => $purchase_request_item->count(),
             'recordsFiltered' => $recordsFiltered,
             'data' => $data
         ]);
@@ -94,7 +144,43 @@ class PurchaseRequestController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $purchase_request = new PurchaseRequest;
+        $purchase_request->user_id = $request->user_id;
+        $purchase_request->due_date = $request->due_date;
+        $purchase_request->remarks = $request->remarks;
+        $purchase_request->subsidiary_id = $request->subsidiary;
+        $purchase_request->department_id = $request->department;
+        $purchase_request->classification_id = $request->classification;
+        $purchase_request->estimated_amount = $request->estimated_amount;
+        $purchase_request->status = 'Pending';
+        $purchase_request->save();
+
+        foreach($request->inventoryItem as $inventoryItem)
+        {
+            $inventory_item = new PurchaseRequestItem;
+            $inventory_item->purchase_request_id = $purchase_request->id;
+            $inventory_item->inventory_id = $inventoryItem;
+            $inventory_item->save();
+        }
+
+        $attachments = $request->file('attachments');
+        foreach($attachments as $attachment)
+        {
+            $name = time().'_'.$attachment->getClientOriginalName();
+            $attachment->move(public_path('purchase_request_files'),$name);
+            $file_name = '/purchase_request_files/' . $name;
+
+            $files = new PurchaseRequestFile;
+            $files->purchase_request_id = $purchase_request->id;
+            $files->file = $file_name;
+            $files->save();
+        }
+        
+        return response()->json([
+            'url' => url('purchase-request'),
+            'status' => 200,
+            'msg' => 'Successfully Saved'
+        ]);
     }
 
     /**

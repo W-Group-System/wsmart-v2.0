@@ -21,4 +21,12 @@ class PurchaseRequest extends Model implements Auditable
     {
         return $this->belongsTo(Subsidiary::class);
     }
+    public function classification()
+    {
+        return $this->belongsTo(Classification::class);
+    }
+    public function purchaseRequestFile()
+    {
+        return $this->hasMany(PurchaseRequestFile::class);
+    }
 }

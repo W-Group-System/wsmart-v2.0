@@ -106,7 +106,7 @@
                 <div class="box-body">
                     @if(count($user->audit) > 0)
                         <div class="panel box box-danger">
-                            @foreach ($user->audit as $key=>$audit)
+                            @foreach ($user->audit->sortByDesc('id') as $key=>$audit)
                                 <div class="box-header with-border">
                                     <h4 class="box-title">
                                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ $key+1 }}"

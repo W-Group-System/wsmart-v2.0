@@ -53,4 +53,6 @@ Route::post('activate-uom','UomController@activate');
 Route::get('purchase-request','PurchaseRequestController@index');
 Route::get('create-purchase-request','PurchaseRequestController@create');
 Route::post('get-purchase-request','PurchaseRequestController@getPurchaseRequest');
+Route::post('get-purchase-item','PurchaseRequestController@getPurchaseRequestItem');
 Route::post('refreshInvetory', 'RefreshController@refreshInventory');
+Route::post('store-purchase-request', 'PurchaseRequestController@store');
