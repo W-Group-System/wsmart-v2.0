@@ -29,4 +29,8 @@ class PurchaseRequest extends Model implements Auditable
     {
         return $this->hasMany(PurchaseRequestFile::class);
     }
+    public function purchaseItem()
+    {
+        return $this->hasMany(PurchaseRequestItem::class);
+    }
 }

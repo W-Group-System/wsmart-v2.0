@@ -12,22 +12,29 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}">
     <!-- Ionicons -->
-    {{-- <link rel="stylesheet" href="{{ asset('bower_components/Ionicons/css/ionicons.min.css') }}"> --}}
+    {{--
+    <link rel="stylesheet" href="{{ asset('bower_components/Ionicons/css/ionicons.min.css') }}"> --}}
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('dist/css/AdminLTE.min.css') }}">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{ asset('dist/css/skins/_all-skins.min.css') }}">
     <!-- Morris chart -->
-    {{-- <link rel="stylesheet" href="{{ asset('bower_components/morris.js/morris.css') }}"> --}}
+    {{--
+    <link rel="stylesheet" href="{{ asset('bower_components/morris.js/morris.css') }}"> --}}
     <!-- jvectormap -->
-    {{-- <link rel="stylesheet" href="{{ asset('bower_components/jvectormap/jquery-jvectormap.css') }}"> --}}
+    {{--
+    <link rel="stylesheet" href="{{ asset('bower_components/jvectormap/jquery-jvectormap.css') }}"> --}}
     <!-- Date Picker -->
-    {{-- <link rel="stylesheet" href="{{ asset('bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}"> --}}
+    {{--
+    <link rel="stylesheet"
+        href="{{ asset('bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}"> --}}
     <!-- Daterange picker -->
-    {{-- <link rel="stylesheet" href="{{ asset('bower_components/bootstrap-daterangepicker/daterangepicker.css') }}"> --}}
+    {{--
+    <link rel="stylesheet" href="{{ asset('bower_components/bootstrap-daterangepicker/daterangepicker.css') }}"> --}}
     <!-- bootstrap wysihtml5 - text editor -->
-    {{-- <link rel="stylesheet" href="{{ asset('plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}"> --}}
+    {{--
+    <link rel="stylesheet" href="{{ asset('plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}"> --}}
     {{-- Datatable --}}
     <link rel="stylesheet" href="{{ asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
     {{-- Toast --}}
@@ -296,7 +303,8 @@
 
                                     <p>
                                         {{ auth()->user()->name.' - '. auth()->user()->position }}
-                                        <small>Member since {{ date('M Y', strtotime(auth()->user()->created_at)) }}</small>
+                                        <small>Member since {{ date('M Y', strtotime(auth()->user()->created_at))
+                                            }}</small>
                                     </p>
                                 </li>
                                 <!-- Menu Body -->
@@ -399,9 +407,17 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li class="@if(Request::is('purchase-request')) active @endif"><a href="{{ url('purchase-request') }}"><i class="fa fa-circle-o"></i>Purchase Request</a></li>
-                            <li class="@if(Request::is('purchase-order')) active @endif"><a href="{{ url('purchase-order') }}"><i class="fa fa-circle-o"></i> Purchase Order</a></li>
-                            <li class="@if(Request::is('for-approval')) active @endif"><a href="{{ url('for-approval') }}"><i class="fa fa-circle-o"></i> For Approval</a></li>
+                            <li class="@if(Request::is('purchase-request')) active @endif"><a
+                                    href="{{ url('purchase-request') }}"><i class="fa fa-circle-o"></i>Purchase
+                                    Request</a></li>
+                            <li class="@if(Request::is('purchase-order')) active @endif"><a
+                                    href="{{ url('purchase-order') }}"><i class="fa fa-circle-o"></i> Purchase Order</a>
+                            </li>
+                            <li class="@if(Request::is('for-approval')) active @endif"><a
+                                    href="{{ url('for-approval') }}"><i class="fa fa-circle-o"></i> For Approval <span
+                                        class="pull-right-container">
+                                        <small class="label pull-right bg-red">0</small>
+                                    </span></a></li>
                         </ul>
                     </li>
                     <li class="treeview">
@@ -412,10 +428,15 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li class="@if(Request::is('user_management')) active @endif"><a href="{{ url('user_management') }}"><i class="fa fa-circle-o"></i> User Management</a></li>
-                            <li class="@if(Request::is('subsidiary')) active @endif"><a href="{{ url('subsidiary') }}"><i class="fa fa-circle-o"></i> Subsidiary</a></li>
-                            <li class="@if(Request::is('department')) active @endif"><a href="{{ url('department') }}"><i class="fa fa-circle-o"></i> Department</a></li>
-                            <li class="@if(Request::is('uoms')) active @endif"><a href="{{ url('uoms') }}"><i class="fa fa-circle-o"></i> Unit of Measurement</a></li>
+                            <li class="@if(Request::is('user_management')) active @endif"><a
+                                    href="{{ url('user_management') }}"><i class="fa fa-circle-o"></i> User
+                                    Management</a></li>
+                            <li class="@if(Request::is('subsidiary')) active @endif"><a
+                                    href="{{ url('subsidiary') }}"><i class="fa fa-circle-o"></i> Subsidiary</a></li>
+                            <li class="@if(Request::is('department')) active @endif"><a
+                                    href="{{ url('department') }}"><i class="fa fa-circle-o"></i> Department</a></li>
+                            <li class="@if(Request::is('uoms')) active @endif"><a href="{{ url('uoms') }}"><i
+                                        class="fa fa-circle-o"></i> Unit of Measurement</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -429,7 +450,7 @@
             <!-- Content Header (Page header) -->
             @yield('content')
 
-            
+
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->

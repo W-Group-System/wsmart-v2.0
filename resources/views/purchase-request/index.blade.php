@@ -113,9 +113,9 @@
                                     <b>Total</b>
                                 </div>
                                 <div class="box-body">
-                                    <p id="totalAmount" style="margin:0;">TOTAL AMOUNT: 
+                                    <p style="margin:0;">TOTAL AMOUNT: 
                                         <div class="text-right">
-                                            <span class="h3 text-right">0.00</span>
+                                            <span class="h3 text-right" id="totalAmount">0.00</span>
                                         </div>
                                     </p>
                                 </div>
@@ -238,8 +238,6 @@
                 // { data: 'status' }
             ],
             rowCallback: function (row, data) {
-                console.log(data.attachments);
-                
                 $(row).eq(0).find('td').on('click', function() {
                     $("#detailContainer").removeAttr('hidden')
                     
@@ -262,7 +260,9 @@
                         $("#fileContainer").append(link);
                     })
 
+                    $("#totalAmount").text(data.total_cost)
                     purchaseRequestItemTable.ajax.reload()
+
                 })
             }
         })

@@ -24,7 +24,7 @@ class PurchaseRequestController extends Controller
     
     public function getPurchaseRequest(Request $request)
     {
-        $query = PurchaseRequest::with('user','classification','department','subsidiary','purchaseRequestFile');
+        $query = PurchaseRequest::with('user','classification','department','subsidiary','purchaseRequestFile','purchaseItem.inventory');
 
         if ($search = $request->input('search.value')) {
             $query->where(function ($q) use ($search) {
@@ -47,7 +47,13 @@ class PurchaseRequestController extends Controller
                     ->limit($request->length)
                     ->get();
         
-        $data = $purchase_request->map(function($item) {
+        $total_cost = 0;        
+        $data = $purchase_request->map(function($item)use($total_cost) {
+            foreach($item->purchaseItem as $purchaseItem)
+            {
+                $total_cost += $purchaseItem->inventory->cost;
+            }
+            
             return [
                 'action' => '
                     <button type="button" class="btn btn-sm btn-info" id="viewBtn">
@@ -65,7 +71,8 @@ class PurchaseRequestController extends Controller
                 'status' => $item->status,
                 'class' => $item->classification->name,
                 'remarks' => nl2br(e($item->remarks)),
-                'attachments' => $item->purchaseRequestFile
+                'attachments' => $item->purchaseRequestFile,
+                'total_cost' => $total_cost
             ];
         });
         
