@@ -52,7 +52,14 @@ Route::post('activate-uom','UomController@activate');
 // Purchase Request
 Route::get('purchase-request','PurchaseRequestController@index');
 Route::get('create-purchase-request','PurchaseRequestController@create');
+Route::get('edit-purchase-request/{id}','PurchaseRequestController@show');
 Route::post('get-purchase-request','PurchaseRequestController@getPurchaseRequest');
 Route::post('get-purchase-item','PurchaseRequestController@getPurchaseRequestItem');
 Route::post('refreshInvetory', 'RefreshController@refreshInventory');
 Route::post('store-purchase-request', 'PurchaseRequestController@store');
+
+// For Approval
+Route::get('for-approval', 'ForApprovalController@index');
+Route::post('get-for-approval-pr', 'ForApprovalController@getForApprovalPr');
+Route::post('get-for-approval-item', 'ForApprovalController@getForApprovalItem');
+Route::post('return-purchase-request','ForApprovalController@returnPurchaseRequest');

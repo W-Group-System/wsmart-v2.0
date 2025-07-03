@@ -3,11 +3,11 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Purchase Request
+        For Approval
     </h1>
     <ol class="breadcrumb">
         <li>Procurement</li>
-        <li>Purchase Request</li>
+        <li>For Approval</li>
     </ol>
 </section>
 
@@ -19,7 +19,7 @@
                 <span class="info-box-icon bg-aqua"><i class="fa fa-dollar"></i></span>
 
                 <div class="info-box-content">
-                    <span class="info-box-text">Total Purchase Request</span>
+                    <span class="info-box-text">Total For Approval</span>
                     <span class="info-box-number">0</span>
                 </div>
                 <!-- /.info-box-content -->
@@ -55,10 +55,6 @@
         <div class="col-lg-3">
             <div class="box box-primary">
                 <div class="box-header">
-                    <a href="{{ url('create-purchase-request') }}" class="btn btn-primary" id="addBtn">
-                        <i class="fa fa-plus"></i>
-                        Add Purchase Request
-                    </a>
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
@@ -88,8 +84,18 @@
                 </div>
                 <div class="box-body">
                     <div id="detailContainer" hidden>
-                        <div id="editButton">
-                            
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-sm btn-success" id="approvedBtn">
+                                <i class="fa fa-thumbs-up"></i>
+                                Approved
+                            </button>
+                            <form method="POST" id="returnPurchaseRequestForm" style="display: inline-block;">
+                                @csrf 
+                                <button type="submit" class="btn btn-sm btn-danger" id="returnedBtn">
+                                    <i class="fa fa-arrow-left"></i>
+                                    Returned
+                                </button>
+                            </form>
                         </div>
                         <h4>Primary Information</h4>
                         <hr>
@@ -158,9 +164,9 @@
                             </div>
                         </div>
                         <div class="row">
-                            <input type="hidden" id="purchaseRequestId">
                             <div class="col-lg-12" style="margin-top: 20px;">
                                 <table class="table-bordered table" id="purchaseRequestItemTable">
+                                    <input type="hidden" name="purchase_request_id" id="purchaseRequestId">
                                     <thead>
                                         <tr>
                                             <th>Item Code</th>
@@ -201,7 +207,7 @@
             stateSave:true,
             ajax: {
                 type: "POST",
-                url: "{{ url('get-purchase-request') }}",
+                url: "{{ url('get-for-approval-pr') }}",
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
@@ -219,7 +225,7 @@
                         if(row.status == "Pending") {
                             label = `<span class="label label-warning">${row.status}</span>`
                         }
-                        else if(row.status == "Returned") {
+                        else if(row.status == "For RFQ") {
                             label = `<span class="label label-primary">${row.status}</span>`
                         }
                         else if(row.status == "Done") {
@@ -264,22 +270,6 @@
                     })
 
                     $("#totalAmount").text(data.total_cost)
-
-                    $("#editButton").children().remove()
-                    var baseUrl = "{{ url('edit-purchase-request') }}";
-                    if (data.status == 'Returned') {
-                        $("#editButton").append(
-                            `
-                                <div class="pull-right">
-                                    <a href="${baseUrl}/${data.id}" class="btn btn-sm btn-warning" id="editPurchaseRequest">
-                                        <i class="fa fa-pencil-square-o"></i>
-                                        Edit
-                                    </a>
-                                </div>
-                            `
-                        )
-                    }
-
                     purchaseRequestItemTable.ajax.reload()
 
                 })
@@ -297,7 +287,7 @@
             stateSave:true,
             ajax: {
                 type: "POST",
-                url: "{{ url('get-purchase-item') }}",
+                url: "{{ url('get-for-approval-item') }}",
                 data: function(d){
                     d.purchase_request_id = $("#purchaseRequestId").val();
                 },
@@ -316,6 +306,46 @@
                 {data: "qty"},
                 {data: "amount"}
             ]
+        })
+        
+        $("#returnPurchaseRequestForm").on('submit', function(e) {
+            e.preventDefault()
+
+            var id = $("#purchaseRequestId").val()
+
+            $.confirm({
+                title: 'Return',
+                content: 'Are you sure you want to return this purchase request?',
+                theme: 'material',
+                buttons: {
+                    confirm: function () {
+                        $.ajax({
+                            type:"POST",
+                            url: "{{ url('return-purchase-request') }}",
+                            data: {
+                                id:id,
+                                _token:"{{ csrf_token() }}"
+                            },
+                            success: function(res) {
+                                $.toast({
+                                    heading: 'Success',
+                                    text: res.msg,
+                                    position: 'top-right',
+                                    stack: false,
+                                    icon: 'success'
+                                })
+
+                                $("#detailContainer").prop('hidden', true)
+
+                                purchaseRequestTable.ajax.reload()
+                            }
+                        })
+                    },
+                    cancel: function () {
+                        $.alert('Canceled!');
+                    }
+                }
+            });
         })
     })
 </script>

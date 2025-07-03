@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Classification;
-use App\Department;
-use App\Inventory;
 use App\PurchaseRequest;
-use App\PurchaseRequestFile;
 use App\PurchaseRequestItem;
 use Illuminate\Http\Request;
 
-class PurchaseRequestController extends Controller
+class ForApprovalController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,10 +15,10 @@ class PurchaseRequestController extends Controller
      */
     public function index()
     {
-        return view('purchase-request.index');
+        return view('for_approval.for_approval');
     }
-    
-    public function getPurchaseRequest(Request $request)
+
+    public function getForApprovalPr(Request $request)
     {
         $query = PurchaseRequest::with('user','classification','department','subsidiary','purchaseRequestFile','purchaseItem.inventory');
 
@@ -45,6 +41,8 @@ class PurchaseRequestController extends Controller
 
         $purchase_request = $query->offset($request->start)
                     ->limit($request->length)
+                    ->where('status', 'Pending')
+                    ->where('department_id', auth()->user()->department_id)
                     ->get();
         
         $total_cost = 0;        
@@ -84,7 +82,7 @@ class PurchaseRequestController extends Controller
         ]);
     }
 
-    public function getPurchaseRequestItem(Request $request)
+    public function getForApprovalItem(Request $request)
     {
         $query = PurchaseRequestItem::with('purchaseRequest')->where('purchase_request_id', $request->purchase_request_id);
 
@@ -136,11 +134,7 @@ class PurchaseRequestController extends Controller
      */
     public function create()
     {
-        $classifications = Classification::whereNull('status')->get();
-        $departments = Department::whereNull('status')->get();
-        $inventories = Inventory::whereNull('status')->get();
-        
-        return view('purchase-request.create', compact('classifications','departments','inventories'));
+        //
     }
 
     /**
@@ -151,43 +145,7 @@ class PurchaseRequestController extends Controller
      */
     public function store(Request $request)
     {
-        $purchase_request = new PurchaseRequest;
-        $purchase_request->user_id = $request->user_id;
-        $purchase_request->due_date = $request->due_date;
-        $purchase_request->remarks = $request->remarks;
-        $purchase_request->subsidiary_id = $request->subsidiary;
-        $purchase_request->department_id = $request->department;
-        $purchase_request->classification_id = $request->classification;
-        $purchase_request->estimated_amount = $request->estimated_amount;
-        $purchase_request->status = 'Pending';
-        $purchase_request->save();
-
-        foreach($request->inventoryItem as $inventoryItem)
-        {
-            $inventory_item = new PurchaseRequestItem;
-            $inventory_item->purchase_request_id = $purchase_request->id;
-            $inventory_item->inventory_id = $inventoryItem;
-            $inventory_item->save();
-        }
-
-        $attachments = $request->file('attachments');
-        foreach($attachments as $attachment)
-        {
-            $name = time().'_'.$attachment->getClientOriginalName();
-            $attachment->move(public_path('purchase_request_files'),$name);
-            $file_name = '/purchase_request_files/' . $name;
-
-            $files = new PurchaseRequestFile;
-            $files->purchase_request_id = $purchase_request->id;
-            $files->file = $file_name;
-            $files->save();
-        }
-        
-        return response()->json([
-            'url' => url('purchase-request'),
-            'status' => 200,
-            'msg' => 'Successfully Saved'
-        ]);
+        //
     }
 
     /**
@@ -198,13 +156,7 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
-        $classifications = Classification::whereNull('status')->get();
-        $departments = Department::whereNull('status')->get();
-        $inventories = Inventory::whereNull('status')->get();
-
-        $purchase_request = PurchaseRequest::with('purchaseItem')->findOrFail($id);
-        
-        return view('purchase-request.edit', compact('classifications','departments','inventories','purchase_request'));
+        //
     }
 
     /**
@@ -239,5 +191,18 @@ class PurchaseRequestController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    
+    public function returnPurchaseRequest(Request $request)
+    {
+        $purchase_request = PurchaseRequest::findOrFail($request->id);
+        $purchase_request->status = 'Returned';
+        $purchase_request->save();
+
+        return response()->json([
+            'status' => '201',
+            'msg' => 'Successfully Returned'
+        ]);
     }
 }
